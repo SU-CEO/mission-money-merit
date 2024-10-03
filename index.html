@@ -13,19 +13,19 @@
 
   <script>
     function plotChart() {
-      // Add predefined programs with different bubble sizes
+      // Add predefined programs with placeholder values for now
       let programs = [
-        { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, size: 177000 },
-        { name: "Advice and Information, 4.7 FTE", mission: 50, money: 50, merit: 50, size: 166000 },
-        { name: "Student Voice, 3.2 FTE", mission: 50, money: 50, merit: 50, size: 130500 },
-        { name: "Communications, 3.1 FTE", mission: 50, money: 50, merit: 50, size: 117000 },
-        { name: "Social Opportunities, 2.5 FTE", mission: 50, money: 50, merit: 50, size: 102000 },
-        { name: "Venues, 1.9 FTE", mission: 50, money: 50, merit: 50, size: 46016 },
-        { name: "NUS, 0 FTE", mission: 50, money: 50, merit: 50, size: 27000 }
+        { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
+        { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
+        { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60 },
+        { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80 },
+        { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50 },
+        { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65 },
+        { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
       ];
 
-      // Convert program sizes to bubble sizes
-      let bubbleSizes = programs.map(program => (program.size / 200000) * 100); // Scale bubble size
+      // Use a fixed size for bubbles for simplicity
+      const bubbleSize = 15;
 
       const data = programs.map((program, index) => ({
         x: [program.mission],
@@ -34,7 +34,7 @@
         text: [program.name],
         mode: 'markers',
         marker: {
-          size: bubbleSizes[index],
+          size: bubbleSize,
           color: Plotly.d3.schemeCategory10[index % 10], // Assign a color from a predefined color scheme
           showscale: false
         },
