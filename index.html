@@ -49,7 +49,7 @@
 
     function addProgram() {
       const programName = document.getElementById("program-name").value;
-      if (programName) {
+      if (programName.trim() !== "") {
         const colorIndex = programs.length % 11; // ensure different colors
         programs.push({
           name: programName,
@@ -59,7 +59,10 @@
           size: 50000,
           color: colorIndex
         });
+        document.getElementById("program-name").value = ""; // clear input field after adding
         updateProgramControls();
+      } else {
+        alert("Please enter a valid program name.");
       }
     }
 
