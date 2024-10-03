@@ -5,62 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mission, Money, Merit Tool</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-    }
-    h1 {
-      text-align: center;
-    }
-    #chart {
-      width: 100%;
-      height: 800px;
-      margin: 0 auto;
-    }
-    .slider-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .slider-box {
-      margin: 10px;
-    }
-  </style>
 </head>
 <body>
   <h1>Mission, Money, Merit Tool</h1>
-
-  <!-- Sliders to adjust Mission, Money, and Merit for the first program -->
-  <div class="slider-container">
-    <div class="slider-box">
-      <label>Mission: <span id="mission-value">50</span></label><br>
-      <input type="range" id="mission-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
-    </div>
-    <div class="slider-box">
-      <label>Money: <span id="money-value">50</span></label><br>
-      <input type="range" id="money-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
-    </div>
-    <div class="slider-box">
-      <label>Merit: <span id="merit-value">50</span></label><br>
-      <input type="range" id="merit-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
-    </div>
-  </div>
-
-  <div id="chart"></div>
+  
+  <div id="chart" style="width:100%;height:800px;"></div>
 
   <script>
-    let programs = [
-      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, size: 177000 },
-      { name: "Advice and Information, 4.7 FTE", mission: 50, money: 50, merit: 50, size: 166000 },
-      { name: "Student Voice, 3.2 FTE", mission: 50, money: 50, merit: 50, size: 130500 },
-      { name: "Communications, 3.1 FTE", mission: 50, money: 50, merit: 50, size: 117000 },
-      { name: "Social Opportunities, 2.5 FTE", mission: 50, money: 50, merit: 50, size: 102000 },
-      { name: "Venues, 1.9 FTE", mission: 50, money: 50, merit: 50, size: 46016 },
-      { name: "NUS, 0 FTE", mission: 50, money: 50, merit: 50, size: 27000 }
-    ];
-
     function plotChart() {
-      const bubbleSizes = programs.map(program => (program.size / 200000) * 100); // Adjust bubble sizes
+      // Add predefined programs with different bubble sizes
+      let programs = [
+        { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, size: 177000 },
+        { name: "Advice and Information, 4.7 FTE", mission: 50, money: 50, merit: 50, size: 166000 },
+        { name: "Student Voice, 3.2 FTE", mission: 50, money: 50, merit: 50, size: 130500 },
+        { name: "Communications, 3.1 FTE", mission: 50, money: 50, merit: 50, size: 117000 },
+        { name: "Social Opportunities, 2.5 FTE", mission: 50, money: 50, merit: 50, size: 102000 },
+        { name: "Venues, 1.9 FTE", mission: 50, money: 50, merit: 50, size: 46016 },
+        { name: "NUS, 0 FTE", mission: 50, money: 50, merit: 50, size: 27000 }
+      ];
+
+      // Convert program sizes to bubble sizes
+      let bubbleSizes = programs.map(program => (program.size / 200000) * 100); // Scale bubble size
 
       const data = programs.map((program, index) => ({
         x: [program.mission],
@@ -70,7 +35,7 @@
         mode: 'markers',
         marker: {
           size: bubbleSizes[index],
-          color: Plotly.d3.schemeCategory10[index % 10], // Assign color
+          color: Plotly.d3.schemeCategory10[index % 10], // Assign a color from a predefined color scheme
           showscale: false
         },
         hovertemplate: `${program.name}`,
@@ -80,55 +45,15 @@
       const layout = {
         title: 'Mission, Money, Merit',
         scene: {
-          xaxis: {
-            title: { text: '<b>Mission</b>', font: { color: '#00008b', size: 14 } },
-            tickvals: [0, 50, 100],
-            ticktext: ['Low Mission Relevance', 'Good Mission Relevance', 'High Mission Relevance'],
-            linecolor: '#003153', // Axis line color
-            showline: true,
-          },
-          yaxis: {
-            title: { text: '<b>Money</b>', font: { color: '#00008b', size: 14 } },
-            tickvals: [0, 50, 100],
-            ticktext: ['Low Engagement Value per £', 'Moderate Value', 'High Engagement Value per £'],
-            linecolor: '#003153', // Axis line color
-            showline: true,
-          },
-          zaxis: {
-            title: { text: '<b>Merit</b>', font: { color: '#00008b', size: 14 } },
-            tickvals: [0, 50, 100],
-            ticktext: ['Low Stakeholder Satisfaction', 'Average Stakeholder Satisfaction', 'High Stakeholder Satisfaction'],
-            linecolor: '#003153', // Axis line color
-            showline: true,
-          },
-          aspectratio: {x: 1, y: 1, z: 1},
-          gridcolor: 'rgb(173, 216, 230)' // Light grey-blue gridlines
+          xaxis: { title: 'Mission', range: [0, 100] },
+          yaxis: { title: 'Money', range: [0, 100] },
+          zaxis: { title: 'Merit', range: [0, 100] },
         },
         height: 800,
         width: 1200
       };
 
       Plotly.newPlot('chart', data, layout);
-    }
-
-    function updateChart() {
-      // Update the values of Mission, Money, and Merit for the first program
-      const mission = document.getElementById("mission-slider").value;
-      const money = document.getElementById("money-slider").value;
-      const merit = document.getElementById("merit-slider").value;
-
-      // Update the displayed values next to the sliders
-      document.getElementById("mission-value").innerText = mission;
-      document.getElementById("money-value").innerText = money;
-      document.getElementById("merit-value").innerText = merit;
-
-      // Update the first program's values
-      programs[0].mission = mission;
-      programs[0].money = money;
-      programs[0].merit = merit;
-
-      // Re-plot the chart with the updated values
-      plotChart();
     }
 
     // Initialize the chart when the page loads
