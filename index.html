@@ -17,15 +17,66 @@
       height: 800px;
       margin: 0 auto;
     }
+    .slider-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .slider-box {
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Mission, Money, Merit Tool</h1>
 
+  <!-- Sliders to adjust Mission, Money, and Merit -->
+  <div class="slider-container">
+    <div class="slider-box">
+      <label>Mission: <span id="mission-value">50</span></label><br>
+      <input type="range" id="mission-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
+    </div>
+    <div class="slider-box">
+      <label>Money: <span id="money-value">50</span></label><br>
+      <input type="range" id="money-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
+    </div>
+    <div class="slider-box">
+      <label>Merit: <span id="merit-value">50</span></label><br>
+      <input type="range" id="merit-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
+    </div>
+  </div>
+
   <div id="chart"></div>
 
   <script>
+    let programs = [
+      {
+        name: "Campaigns, Representation, Influence, 5 FTE",
+        mission: 50,
+        money: 50,
+        merit: 50,
+        size: 177000  // Fixed size for now
+      }
+    ];
+
     function plotChart() {
+      const bubbleSize = programs[0].size / 200000 * 100; // Relative size for one bubble
+
+      const data = [{
+        x: [programs[0].mission],
+        y: [programs[0].money],
+        z: [programs[0].merit],
+        text: [programs[0].name],
+        mode: 'markers',
+        marker: {
+          size: bubbleSize,
+          color: 'blue', // Single color for now
+          showscale: false
+        },
+        hovertemplate: `${programs[0].name}`,
+        type: 'scatter3d'
+      }];
+
       const layout = {
         title: 'Mission, Money, Merit',
         scene: {
@@ -39,10 +90,27 @@
         width: 1200
       };
 
-      // Empty data for now, only showing the chart's cube structure
-      const data = [];
-
       Plotly.newPlot('chart', data, layout);
+    }
+
+    function updateChart() {
+      // Update the values of Mission, Money, and Merit from the sliders
+      const mission = document.getElementById("mission-slider").value;
+      const money = document.getElementById("money-slider").value;
+      const merit = document.getElementById("merit-slider").value;
+
+      // Update the displayed values next to the sliders
+      document.getElementById("mission-value").innerText = mission;
+      document.getElementById("money-value").innerText = money;
+      document.getElementById("merit-value").innerText = merit;
+
+      // Update the program values
+      programs[0].mission = mission;
+      programs[0].money = money;
+      programs[0].merit = merit;
+
+      // Re-plot the chart with the updated values
+      plotChart();
     }
 
     // Initialize the chart when the page loads
