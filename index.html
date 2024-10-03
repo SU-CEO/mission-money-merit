@@ -37,7 +37,7 @@
   <div>
     <label for="program-name">Program Name:</label>
     <input type="text" id="program-name">
-    <button onclick="addProgram()">Add Program</button>
+    <button id="add-program-btn">Add Program</button>
   </div>
   
   <div id="program-controls"></div>
@@ -46,6 +46,9 @@
   
   <script>
     let programs = [];
+
+    // Bind the button to ensure the event triggers correctly
+    document.getElementById("add-program-btn").addEventListener("click", addProgram);
 
     function addProgram() {
       const programName = document.getElementById("program-name").value;
@@ -68,7 +71,7 @@
 
     function updateProgramControls() {
       const controls = document.getElementById("program-controls");
-      controls.innerHTML = '';
+      controls.innerHTML = ''; // Clear the controls before adding the updated list
       programs.forEach((program, index) => {
         const color = Plotly.d3.schemeCategory10[program.color % 10]; // get color
         controls.innerHTML += `
@@ -114,8 +117,8 @@
     }
 
     function removeProgram(index) {
-      programs.splice(index, 1);
-      updateProgramControls();
+      programs.splice(index, 1); // Remove the program from the array
+      updateProgramControls(); // Update the display
     }
 
     function plotChart() {
