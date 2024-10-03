@@ -4,7 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mission, Money, Merit Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .slider-container {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .value-box {
+      width: 30%;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      padding: 10px;
+      border: 2px solid black;
+      margin-right: 10px;
+    }
+    .slider-box {
+      width: 70%;
+    }
+    h3 {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <h1>Mission, Money, Merit Tool</h1>
@@ -25,12 +50,14 @@
     function addProgram() {
       const programName = document.getElementById("program-name").value;
       if (programName) {
+        const colorIndex = programs.length % 11; // ensure different colors
         programs.push({
           name: programName,
           mission: 50,
           money: 50,
           merit: 50,
-          size: 50000
+          size: 50000,
+          color: colorIndex
         });
         updateProgramControls();
       }
@@ -40,23 +67,37 @@
       const controls = document.getElementById("program-controls");
       controls.innerHTML = '';
       programs.forEach((program, index) => {
+        const color = Plotly.d3.schemeCategory10[program.color % 10]; // get color
         controls.innerHTML += `
-          <h3>${program.name}</h3>
-          <label>Mission: <span id="mission-value-${index}">${program.mission}</span> (0 - Low Mission Relevance to 100 - High Mission Relevance)</label>
-          <input style="width: 100%;" type="range" min="0" max="100" value="${program.mission}" step="5"
-                 oninput="document.getElementById('mission-value-${index}').textContent = this.value; updateProgram(${index}, 'mission', this.value)">
-          
-          <label>Money: <span id="money-value-${index}">${program.money}</span> (0 - Low Engagement Value per £ to 100 - High Engagement Value per £)</label>
-          <input style="width: 100%;" type="range" min="0" max="100" value="${program.money}" step="5"
-                 oninput="document.getElementById('money-value-${index}').textContent = this.value; updateProgram(${index}, 'money', this.value)">
-          
-          <label>Merit: <span id="merit-value-${index}">${program.merit}</span> (0 - Low Stakeholder Satisfaction to 100 - High Stakeholder Satisfaction)</label>
-          <input style="width: 100%;" type="range" min="0" max="100" value="${program.merit}" step="5"
-                 oninput="document.getElementById('merit-value-${index}').textContent = this.value; updateProgram(${index}, 'merit', this.value)">
-          
-          <label>Relative Size of Resource Commitment (£): <span id="size-value-${index}">${program.size}</span> (£0 - £200k)</label>
-          <input style="width: 100%;" type="range" min="0" max="200000" value="${program.size}" step="5000"
-                 oninput="document.getElementById('size-value-${index}').textContent = this.value; updateProgram(${index}, 'size', this.value)">
+          <h3 style="color:${color};">${program.name}</h3>
+          <div class="slider-container">
+            <div class="value-box">Mission: <span id="mission-value-${index}">${program.mission}</span></div>
+            <div class="slider-box">
+              <input type="range" min="0" max="100" value="${program.mission}" step="5"
+                     oninput="document.getElementById('mission-value-${index}').textContent = this.value; updateProgram(${index}, 'mission', this.value)">
+            </div>
+          </div>
+          <div class="slider-container">
+            <div class="value-box">Money: <span id="money-value-${index}">${program.money}</span></div>
+            <div class="slider-box">
+              <input type="range" min="0" max="100" value="${program.money}" step="5"
+                     oninput="document.getElementById('money-value-${index}').textContent = this.value; updateProgram(${index}, 'money', this.value)">
+            </div>
+          </div>
+          <div class="slider-container">
+            <div class="value-box">Merit: <span id="merit-value-${index}">${program.merit}</span></div>
+            <div class="slider-box">
+              <input type="range" min="0" max="100" value="${program.merit}" step="5"
+                     oninput="document.getElementById('merit-value-${index}').textContent = this.value; updateProgram(${index}, 'merit', this.value)">
+            </div>
+          </div>
+          <div class="slider-container">
+            <div class="value-box">Relative Size (£): <span id="size-value-${index}">${program.size}</span></div>
+            <div class="slider-box">
+              <input type="range" min="0" max="200000" value="${program.size}" step="5000"
+                     oninput="document.getElementById('size-value-${index}').textContent = this.value; updateProgram(${index}, 'size', this.value)">
+            </div>
+          </div>
           <button onclick="removeProgram(${index})">Remove</button>
           <br><br>
         `;
@@ -75,9 +116,8 @@
     }
 
     function plotChart() {
-      const totalPrograms = programs.length;
       const maxSize = 200000; // Max size is £200k
-      const bubbleSizes = programs.map(program => program.size / maxSize * 80 + 10); // Adjusted to reflect proportional size more realistically
+      const bubbleSizes = programs.map(program => program.size / maxSize * (800 / 11) + (800 / 40)); // Adjust size
 
       const data = programs.map((program, index) => ({
         x: [program.mission],
@@ -86,9 +126,8 @@
         text: [program.name],
         mode: 'markers',
         marker: {
-          size: bubbleSizes[index], // Scale bubble size based on resource commitment
-          color: index, // color each bubble differently
-          colorscale: 'Portland',
+          size: bubbleSizes[index],
+          color: Plotly.d3.schemeCategory10[program.color % 10], // Assign color
           showscale: false
         },
         hovertemplate: `${program.name}`,
@@ -100,7 +139,9 @@
         scene: {
           xaxis: { title: 'Mission', tickvals: [0, 50, 100], ticktext: ['Low Mission Relevance', 'Good Mission Relevance', 'High Mission Relevance'] },
           yaxis: { title: 'Money', tickvals: [0, 50, 100], ticktext: ['Low Engagement Value per £', 'Moderate Value', 'High Engagement Value per £'] },
-          zaxis: { title: 'Merit', tickvals: [0, 50, 100], ticktext: ['Low Stakeholder Satisfaction', 'Average Stakeholder Satisfaction', 'High Stakeholder Satisfaction'] }
+          zaxis: { title: 'Merit', tickvals: [0, 50, 100], ticktext: ['Low Stakeholder Satisfaction', 'Average Stakeholder Satisfaction', 'High Stakeholder Satisfaction'] },
+          aspectratio: {x: 1, y: 1, z: 1},
+          gridcolor: 'rgb(173, 216, 230)' // Light grey-blue gridlines
         },
         height: 800,
         width: 1200
