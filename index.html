@@ -30,7 +30,7 @@
 <body>
   <h1>Mission, Money, Merit Tool</h1>
 
-  <!-- Sliders to adjust Mission, Money, and Merit -->
+  <!-- Sliders to adjust Mission, Money, and Merit for the first program -->
   <div class="slider-container">
     <div class="slider-box">
       <label>Mission: <span id="mission-value">50</span></label><br>
@@ -60,7 +60,7 @@
     ];
 
     function plotChart() {
-      const bubbleSizes = programs.map(program => (program.size / 200000) * 100); // Adjusting bubble sizes
+      const bubbleSizes = programs.map(program => (program.size / 200000) * 100); // Adjust bubble sizes
 
       const data = programs.map((program, index) => ({
         x: [program.mission],
@@ -85,21 +85,21 @@
             tickvals: [0, 50, 100],
             ticktext: ['Low Mission Relevance', 'Good Mission Relevance', 'High Mission Relevance'],
             linecolor: '#003153', // Axis line color
-            showline: true, // Always show axis lines
+            showline: true,
           },
           yaxis: {
             title: { text: '<b>Money</b>', font: { color: '#00008b', size: 14 } },
             tickvals: [0, 50, 100],
             ticktext: ['Low Engagement Value per £', 'Moderate Value', 'High Engagement Value per £'],
             linecolor: '#003153', // Axis line color
-            showline: true, // Always show axis lines
+            showline: true,
           },
           zaxis: {
             title: { text: '<b>Merit</b>', font: { color: '#00008b', size: 14 } },
             tickvals: [0, 50, 100],
             ticktext: ['Low Stakeholder Satisfaction', 'Average Stakeholder Satisfaction', 'High Stakeholder Satisfaction'],
             linecolor: '#003153', // Axis line color
-            showline: true, // Always show axis lines
+            showline: true,
           },
           aspectratio: {x: 1, y: 1, z: 1},
           gridcolor: 'rgb(173, 216, 230)' // Light grey-blue gridlines
@@ -112,7 +112,7 @@
     }
 
     function updateChart() {
-      // Update the values of Mission, Money, and Merit from the sliders
+      // Update the values of Mission, Money, and Merit for the first program
       const mission = document.getElementById("mission-slider").value;
       const money = document.getElementById("money-slider").value;
       const merit = document.getElementById("merit-slider").value;
@@ -122,12 +122,10 @@
       document.getElementById("money-value").innerText = money;
       document.getElementById("merit-value").innerText = merit;
 
-      // Update the program values
-      programs.forEach(program => {
-        program.mission = mission;
-        program.money = money;
-        program.merit = merit;
-      });
+      // Update the first program's values
+      programs[0].mission = mission;
+      programs[0].money = money;
+      programs[0].merit = merit;
 
       // Re-plot the chart with the updated values
       plotChart();
