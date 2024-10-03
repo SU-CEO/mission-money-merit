@@ -4,73 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mission, Money, Merit Tool</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Arial', sans-serif;
     }
-    .slider-container {
-      display: flex;
-      margin-bottom: 20px;
+    h1 {
+      text-align: center;
     }
-    .value-box {
-      width: 30%;
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      padding: 10px;
-      border: 2px solid black;
-      margin-right: 10px;
-    }
-    .slider-box {
-      width: 70%;
-    }
-    h3 {
-      font-weight: bold;
+    #chart {
+      width: 100%;
+      height: 800px;
+      margin: 0 auto;
     }
   </style>
 </head>
 <body>
   <h1>Mission, Money, Merit Tool</h1>
 
-  <div id="program-controls"></div>
-
-  <div id="chart" style="width:100%;height:800px;"></div>
+  <div id="chart"></div>
 
   <script>
-    // Define the 7 predefined programs with their respective bubble values
-    const programs = [
-      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, size: 177000 },
-      { name: "Advice and Information, 4.7 FTE", mission: 50, money: 50, merit: 50, size: 166000 },
-      { name: "Student Voice, 3.2 FTE", mission: 50, money: 50, merit: 50, size: 130500 },
-      { name: "Communications, 3.1 FTE", mission: 50, money: 50, merit: 50, size: 117000 },
-      { name: "Social Opportunities, 2.5 FTE", mission: 50, money: 50, merit: 50, size: 102000 },
-      { name: "Venues, 1.9 FTE", mission: 50, money: 50, merit: 50, size: 46016 },
-      { name: "NUS, 0 FTE", mission: 50, money: 50, merit: 50, size: 27000 }
-    ];
-
     function plotChart() {
-      const totalBubbleSize = programs.reduce((total, program) => total + program.size, 0);
-
-      // Calculate proportional sizes based on total bubble volume being 50% of the space
-      const bubbleSizes = programs.map(program => (program.size / totalBubbleSize) * (800 / 2)); // Adjust for 50% volume
-
-      const data = programs.map((program, index) => ({
-        x: [program.mission],
-        y: [program.money],
-        z: [program.merit],
-        text: [program.name],
-        mode: 'markers',
-        marker: {
-          size: bubbleSizes[index],
-          color: Plotly.d3.schemeCategory10[index % 10], // Assign color
-          showscale: false
-        },
-        hovertemplate: `${program.name}`,
-        type: 'scatter3d'
-      }));
-
       const layout = {
         title: 'Mission, Money, Merit',
         scene: {
@@ -84,10 +39,13 @@
         width: 1200
       };
 
+      // Empty data for now, only showing the chart's cube structure
+      const data = [];
+
       Plotly.newPlot('chart', data, layout);
     }
 
-    // Initialize chart with the predefined programs
+    // Initialize the chart when the page loads
     plotChart();
   </script>
 </body>
