@@ -51,19 +51,20 @@
     document.getElementById("add-program-btn").addEventListener("click", addProgram);
 
     function addProgram() {
-      const programName = document.getElementById("program-name").value;
-      if (programName.trim() !== "") {
+      const programName = document.getElementById("program-name").value.trim();
+      if (programName !== "") {
         const colorIndex = programs.length % 11; // ensure different colors
         programs.push({
           name: programName,
-          mission: 50,
-          money: 50,
-          merit: 50,
-          size: 50000,
+          mission: 50,  // Default value
+          money: 50,    // Default value
+          merit: 50,    // Default value
+          size: 50000,  // Default value
           color: colorIndex
         });
         document.getElementById("program-name").value = ""; // clear input field after adding
         updateProgramControls();
+        plotChart(); // Plot the chart after adding the program
       } else {
         alert("Please enter a valid program name.");
       }
@@ -72,6 +73,7 @@
     function updateProgramControls() {
       const controls = document.getElementById("program-controls");
       controls.innerHTML = ''; // Clear the controls before adding the updated list
+
       programs.forEach((program, index) => {
         const color = Plotly.d3.schemeCategory10[program.color % 10]; // get color
         controls.innerHTML += `
@@ -108,17 +110,17 @@
           <br><br>
         `;
       });
-      plotChart();
     }
 
     function updateProgram(index, field, value) {
       programs[index][field] = parseFloat(value);
-      plotChart();
+      plotChart(); // Update the chart dynamically
     }
 
     function removeProgram(index) {
       programs.splice(index, 1); // Remove the program from the array
       updateProgramControls(); // Update the display
+      plotChart(); // Update the chart after removal
     }
 
     function plotChart() {
