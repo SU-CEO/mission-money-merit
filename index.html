@@ -33,99 +33,28 @@
 </head>
 <body>
   <h1>Mission, Money, Merit Tool</h1>
-  
-  <div>
-    <label for="program-name">Program Name:</label>
-    <input type="text" id="program-name">
-    <button id="add-program-btn">Add Program</button>
-  </div>
-  
+
   <div id="program-controls"></div>
 
   <div id="chart" style="width:100%;height:800px;"></div>
-  
+
   <script>
-    let programs = [];
-
-    // Bind the button to ensure the event triggers correctly
-    document.getElementById("add-program-btn").addEventListener("click", addProgram);
-
-    function addProgram() {
-      const programName = document.getElementById("program-name").value.trim();
-      if (programName !== "") {
-        const colorIndex = programs.length % 11; // ensure different colors
-        programs.push({
-          name: programName,
-          mission: 50,  // Default value
-          money: 50,    // Default value
-          merit: 50,    // Default value
-          size: 50000,  // Default value
-          color: colorIndex
-        });
-        document.getElementById("program-name").value = ""; // clear input field after adding
-        updateProgramControls();
-        plotChart(); // Plot the chart after adding the program
-      } else {
-        alert("Please enter a valid program name.");
-      }
-    }
-
-    function updateProgramControls() {
-      const controls = document.getElementById("program-controls");
-      controls.innerHTML = ''; // Clear the controls before adding the updated list
-
-      programs.forEach((program, index) => {
-        const color = Plotly.d3.schemeCategory10[program.color % 10]; // get color
-        controls.innerHTML += `
-          <h3 style="color:${color};">${program.name}</h3>
-          <div class="slider-container">
-            <div class="value-box">Mission: <span id="mission-value-${index}">${program.mission}</span></div>
-            <div class="slider-box">
-              <input type="range" min="0" max="100" value="${program.mission}" step="5"
-                     oninput="document.getElementById('mission-value-${index}').textContent = this.value; updateProgram(${index}, 'mission', this.value)">
-            </div>
-          </div>
-          <div class="slider-container">
-            <div class="value-box">Money: <span id="money-value-${index}">${program.money}</span></div>
-            <div class="slider-box">
-              <input type="range" min="0" max="100" value="${program.money}" step="5"
-                     oninput="document.getElementById('money-value-${index}').textContent = this.value; updateProgram(${index}, 'money', this.value)">
-            </div>
-          </div>
-          <div class="slider-container">
-            <div class="value-box">Merit: <span id="merit-value-${index}">${program.merit}</span></div>
-            <div class="slider-box">
-              <input type="range" min="0" max="100" value="${program.merit}" step="5"
-                     oninput="document.getElementById('merit-value-${index}').textContent = this.value; updateProgram(${index}, 'merit', this.value)">
-            </div>
-          </div>
-          <div class="slider-container">
-            <div class="value-box">Relative Size (£): <span id="size-value-${index}">${program.size}</span></div>
-            <div class="slider-box">
-              <input type="range" min="0" max="200000" value="${program.size}" step="5000"
-                     oninput="document.getElementById('size-value-${index}').textContent = this.value; updateProgram(${index}, 'size', this.value)">
-            </div>
-          </div>
-          <button onclick="removeProgram(${index})">Remove</button>
-          <br><br>
-        `;
-      });
-    }
-
-    function updateProgram(index, field, value) {
-      programs[index][field] = parseFloat(value);
-      plotChart(); // Update the chart dynamically
-    }
-
-    function removeProgram(index) {
-      programs.splice(index, 1); // Remove the program from the array
-      updateProgramControls(); // Update the display
-      plotChart(); // Update the chart after removal
-    }
+    // Define the 7 predefined programs with their respective bubble values
+    const programs = [
+      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, size: 177000 },
+      { name: "Advice and Information, 4.7 FTE", mission: 50, money: 50, merit: 50, size: 166000 },
+      { name: "Student Voice, 3.2 FTE", mission: 50, money: 50, merit: 50, size: 130500 },
+      { name: "Communications, 3.1 FTE", mission: 50, money: 50, merit: 50, size: 117000 },
+      { name: "Social Opportunities, 2.5 FTE", mission: 50, money: 50, merit: 50, size: 102000 },
+      { name: "Venues, 1.9 FTE", mission: 50, money: 50, merit: 50, size: 46016 },
+      { name: "NUS, 0 FTE", mission: 50, money: 50, merit: 50, size: 27000 }
+    ];
 
     function plotChart() {
-      const maxSize = 200000; // Max size is £200k
-      const bubbleSizes = programs.map(program => program.size / maxSize * (800 / 11) + (800 / 40)); // Adjust size
+      const totalBubbleSize = programs.reduce((total, program) => total + program.size, 0);
+
+      // Calculate proportional sizes based on total bubble volume being 50% of the space
+      const bubbleSizes = programs.map(program => (program.size / totalBubbleSize) * (800 / 2)); // Adjust for 50% volume
 
       const data = programs.map((program, index) => ({
         x: [program.mission],
@@ -135,7 +64,7 @@
         mode: 'markers',
         marker: {
           size: bubbleSizes[index],
-          color: Plotly.d3.schemeCategory10[program.color % 10], // Assign color
+          color: Plotly.d3.schemeCategory10[index % 10], // Assign color
           showscale: false
         },
         hovertemplate: `${program.name}`,
@@ -158,7 +87,7 @@
       Plotly.newPlot('chart', data, layout);
     }
 
-    // Initialize empty chart
+    // Initialize chart with the predefined programs
     plotChart();
   </script>
 </body>
