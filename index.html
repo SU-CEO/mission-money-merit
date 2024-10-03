@@ -77,7 +77,7 @@
     function plotChart() {
       const totalPrograms = programs.length;
       const maxSize = 200000; // Max size is £200k
-      const bubbleSizes = programs.map(program => program.size / maxSize * 100); // Proportionate size
+      const bubbleSizes = programs.map(program => program.size / maxSize * 80 + 10); // Adjusted to reflect proportional size more realistically
 
       const data = programs.map((program, index) => ({
         x: [program.mission],
