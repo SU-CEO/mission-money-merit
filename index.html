@@ -18,62 +18,78 @@
     }
     .slider-container {
       display: flex;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
       margin-bottom: 20px;
     }
     .slider-box {
       margin: 10px;
     }
+    .program-name {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Mission, Money, Merit Tool with Sliders</h1>
+  <h1>Mission, Money, Merit Tool with Sliders for Each Program</h1>
 
-  <!-- Sliders for Mission, Money, and Merit for first program -->
-  <div class="slider-container">
-    <div class="slider-box">
-      <label>Mission: <span id="mission-value">50</span></label><br>
-      <input type="range" id="mission-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
-    </div>
-    <div class="slider-box">
-      <label>Money: <span id="money-value">50</span></label><br>
-      <input type="range" id="money-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
-    </div>
-    <div class="slider-box">
-      <label>Merit: <span id="merit-value">50</span></label><br>
-      <input type="range" id="merit-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
-    </div>
+  <!-- Sliders for each program -->
+  <div class="slider-container" id="sliders">
+    <!-- Sliders will be dynamically inserted here -->
   </div>
 
   <div id="chart"></div>
 
   <script>
     let programs = [
-      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
-      { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
-      { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60 },
-      { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80 },
-      { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50 },
-      { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65 },
-      { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
+      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, color: 'red' },
+      { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55, color: 'blue' },
+      { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60, color: 'green' },
+      { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80, color: 'purple' },
+      { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50, color: 'orange' },
+      { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65, color: 'cyan' },
+      { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70, color: 'magenta' }
     ];
 
-    // Update chart when sliders are moved
-    function updateChart() {
-      const mission = document.getElementById("mission-slider").value;
-      const money = document.getElementById("money-slider").value;
-      const merit = document.getElementById("merit-slider").value;
+    function createSliders() {
+      const sliderContainer = document.getElementById("sliders");
+
+      programs.forEach((program, index) => {
+        const sliderBox = document.createElement('div');
+        sliderBox.className = 'slider-box';
+
+        sliderBox.innerHTML = `
+          <label class="program-name" style="color: ${program.color};">${program.name}</label><br>
+          Mission: <span id="mission-value-${index}">${program.mission}</span>
+          <input type="range" id="mission-slider-${index}" min="0" max="100" value="${program.mission}" step="5" oninput="updateChart(${index})"><br>
+          Money: <span id="money-value-${index}">${program.money}</span>
+          <input type="range" id="money-slider-${index}" min="0" max="100" value="${program.money}" step="5" oninput="updateChart(${index})"><br>
+          Merit: <span id="merit-value-${index}">${program.merit}</span>
+          <input type="range" id="merit-slider-${index}" min="0" max="100" value="${program.merit}" step="5" oninput="updateChart(${index})"><br>
+        `;
+
+        sliderContainer.appendChild(sliderBox);
+      });
+    }
+
+    function updateChart(index) {
+      // Get slider values for the respective program
+      const mission = document.getElementById(`mission-slider-${index}`).value;
+      const money = document.getElementById(`money-slider-${index}`).value;
+      const merit = document.getElementById(`merit-slider-${index}`).value;
 
       // Update displayed values
-      document.getElementById("mission-value").innerText = mission;
-      document.getElementById("money-value").innerText = money;
-      document.getElementById("merit-value").innerText = merit;
+      document.getElementById(`mission-value-${index}`).innerText = mission;
+      document.getElementById(`money-value-${index}`).innerText = money;
+      document.getElementById(`merit-value-${index}`).innerText = merit;
 
-      // Update the first program's values
-      programs[0].mission = parseFloat(mission);
-      programs[0].money = parseFloat(money);
-      programs[0].merit = parseFloat(merit);
+      // Update the program's values
+      programs[index].mission = parseFloat(mission);
+      programs[index].money = parseFloat(money);
+      programs[index].merit = parseFloat(merit);
 
+      // Re-plot the chart
       plotChart();
     }
 
@@ -83,9 +99,7 @@
       const yValues = programs.map(p => p.money);
       const zValues = programs.map(p => p.merit);
       const textValues = programs.map(p => p.name);
-
-      // Colors for programs
-      const colors = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'magenta'];
+      const colors = programs.map(p => p.color);
 
       const data = [{
         x: xValues,
@@ -116,7 +130,8 @@
       Plotly.newPlot('chart', data, layout);
     }
 
-    // Initialize the chart
+    // Create the sliders and initialize the chart
+    createSliders();
     plotChart();
   </script>
 </body>
