@@ -8,12 +8,12 @@
 </head>
 <body>
   <h1>Mission, Money, Merit Tool</h1>
-  
+
   <div id="chart" style="width:100%;height:800px;"></div>
 
   <script>
     function plotChart() {
-      // Predefined programs
+      // Predefined programs (check if they're defined correctly)
       const programs = [
         { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
         { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
@@ -24,11 +24,17 @@
         { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
       ];
 
+      // Check if programs are defined
+      if (!programs || programs.length === 0) {
+        console.error("Programs data is not defined correctly.");
+        return;
+      }
+
       // Extract data into separate arrays for x, y, z coordinates and text labels
-      const xValues = programs.map(p => p.mission);
-      const yValues = programs.map(p => p.money);
-      const zValues = programs.map(p => p.merit);
-      const textValues = programs.map(p => p.name);
+      const xValues = programs.map(p => p.mission || 0);  // Default to 0 if undefined
+      const yValues = programs.map(p => p.money || 0);    // Default to 0 if undefined
+      const zValues = programs.map(p => p.merit || 0);    // Default to 0 if undefined
+      const textValues = programs.map(p => p.name || "No Name");
 
       // Log data to verify correctness
       console.log("X Values:", xValues);
