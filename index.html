@@ -25,32 +25,69 @@
     }
     .slider-box {
       margin: 10px;
+      display: flex;
+      justify-content: flex-start;
+      width: 80%;
+    }
+    .slider-box label {
+      width: 200px;
     }
     .program-name {
       font-weight: bold;
     }
+    table {
+      margin: 0 auto;
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    input[type="number"] {
+      width: 80px;
+    }
   </style>
 </head>
 <body>
-  <h1>Mission, Money, Merit Tool with Sliders for Each Program</h1>
+  <h1>Mission, Money, Merit Tool with Adjustable Bubble Sizes</h1>
 
   <!-- Sliders for each program -->
-  <div class="slider-container" id="sliders">
-    <!-- Sliders will be dynamically inserted here -->
-  </div>
+  <div class="slider-container" id="sliders"></div>
+
+  <!-- Table for adjusting bubble sizes -->
+  <h2 style="text-align:center">Adjust Bubble Sizes (£)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Program Name</th>
+        <th>Bubble Size (£)</th>
+      </tr>
+    </thead>
+    <tbody id="bubble-size-table">
+      <!-- Bubble size rows will be dynamically inserted here -->
+    </tbody>
+  </table>
 
   <div id="chart"></div>
 
   <script>
     let programs = [
-      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, color: 'red' },
-      { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55, color: 'blue' },
-      { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60, color: 'green' },
-      { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80, color: 'purple' },
-      { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50, color: 'orange' },
-      { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65, color: 'cyan' },
-      { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70, color: 'magenta' }
+      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50, size: 177000, color: 'red' },
+      { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55, size: 166000, color: 'blue' },
+      { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60, size: 130500, color: 'green' },
+      { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80, size: 117000, color: 'purple' },
+      { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50, size: 102000, color: 'orange' },
+      { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65, size: 46016, color: 'cyan' },
+      { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70, size: 27000, color: 'magenta' }
     ];
+
+    // Maximum bubble size in £
+    const MAX_BUBBLE_SIZE = 200000;
 
     function createSliders() {
       const sliderContainer = document.getElementById("sliders");
@@ -60,46 +97,67 @@
         sliderBox.className = 'slider-box';
 
         sliderBox.innerHTML = `
-          <label class="program-name" style="color: ${program.color};">${program.name}</label><br>
-          Mission: <span id="mission-value-${index}">${program.mission}</span>
-          <input type="range" id="mission-slider-${index}" min="0" max="100" value="${program.mission}" step="5" oninput="updateChart(${index})"><br>
-          Money: <span id="money-value-${index}">${program.money}</span>
-          <input type="range" id="money-slider-${index}" min="0" max="100" value="${program.money}" step="5" oninput="updateChart(${index})"><br>
-          Merit: <span id="merit-value-${index}">${program.merit}</span>
-          <input type="range" id="merit-slider-${index}" min="0" max="100" value="${program.merit}" step="5" oninput="updateChart(${index})"><br>
+          <label class="program-name" style="color: ${program.color};">${program.name}</label>
+          <div>
+            Mission: <span id="mission-value-${index}">${program.mission}</span>
+            <input type="range" id="mission-slider-${index}" min="0" max="100" value="${program.mission}" step="5" oninput="updateChart(${index})"><br>
+            Money: <span id="money-value-${index}">${program.money}</span>
+            <input type="range" id="money-slider-${index}" min="0" max="100" value="${program.money}" step="5" oninput="updateChart(${index})"><br>
+            Merit: <span id="merit-value-${index}">${program.merit}</span>
+            <input type="range" id="merit-slider-${index}" min="0" max="100" value="${program.merit}" step="5" oninput="updateChart(${index})"><br>
+          </div>
         `;
 
         sliderContainer.appendChild(sliderBox);
       });
     }
 
+    function createBubbleSizeTable() {
+      const tableBody = document.getElementById("bubble-size-table");
+
+      programs.forEach((program, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${program.name}</td>
+          <td><input type="number" id="bubble-size-${index}" value="${program.size}" min="0" max="${MAX_BUBBLE_SIZE}" step="1000" oninput="updateBubbleSize(${index})"></td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    function updateBubbleSize(index) {
+      const newSize = document.getElementById(`bubble-size-${index}`).value;
+      programs[index].size = parseFloat(newSize);
+
+      // Re-plot the chart with updated bubble sizes
+      plotChart();
+    }
+
     function updateChart(index) {
-      // Get slider values for the respective program
       const mission = document.getElementById(`mission-slider-${index}`).value;
       const money = document.getElementById(`money-slider-${index}`).value;
       const merit = document.getElementById(`merit-slider-${index}`).value;
 
-      // Update displayed values
       document.getElementById(`mission-value-${index}`).innerText = mission;
       document.getElementById(`money-value-${index}`).innerText = money;
       document.getElementById(`merit-value-${index}`).innerText = merit;
 
-      // Update the program's values
       programs[index].mission = parseFloat(mission);
       programs[index].money = parseFloat(money);
       programs[index].merit = parseFloat(merit);
 
-      // Re-plot the chart
       plotChart();
     }
 
     function plotChart() {
-      // Extract x, y, z values and text labels from programs
       const xValues = programs.map(p => p.mission);
       const yValues = programs.map(p => p.money);
       const zValues = programs.map(p => p.merit);
       const textValues = programs.map(p => p.name);
       const colors = programs.map(p => p.color);
+      const sizes = programs.map(p => (p.size / MAX_BUBBLE_SIZE) * 50);  // Scale bubble size relative to max size
 
       const data = [{
         x: xValues,
@@ -108,11 +166,11 @@
         text: textValues,
         mode: 'markers',
         marker: {
-          size: 15,
+          size: sizes,
           color: colors,
           showscale: false
         },
-        hovertemplate: '%{text}',
+        hovertemplate: '%{text} (£%{marker.size})',
         type: 'scatter3d'
       }];
 
@@ -130,8 +188,8 @@
       Plotly.newPlot('chart', data, layout);
     }
 
-    // Create the sliders and initialize the chart
     createSliders();
+    createBubbleSizeTable();
     plotChart();
   </script>
 </body>
