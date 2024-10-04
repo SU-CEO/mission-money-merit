@@ -168,7 +168,7 @@
       const zValues = programs.map(p => p.merit);
       const textValues = programs.map(p => p.name);
       const colors = programs.map(p => p.color);
-      const sizes = programs.map(p => (p.size / MAX_BUBBLE_SIZE) * 50);
+      const sizes = programs.map(p => (p.size / MAX_BUBBLE_SIZE) * 50);  // Adjust bubble size proportionally
 
       const data = [{
         x: xValues,
