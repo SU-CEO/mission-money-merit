@@ -13,7 +13,7 @@
 
   <script>
     function plotChart() {
-      // Predefined programs (ensured the array is correctly defined)
+      // Predefined programs
       const programs = [
         { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
         { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
@@ -24,16 +24,16 @@
         { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
       ];
 
-      // Create arrays for x, y, z values and names (checking if they exist first)
+      // Ensure that there are colors for each program, cycling if necessary
+      const colors = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'magenta'];
+
+      // Map data into x, y, z values
       const xValues = programs.map(p => p.mission !== undefined ? p.mission : 0);
       const yValues = programs.map(p => p.money !== undefined ? p.money : 0);
       const zValues = programs.map(p => p.merit !== undefined ? p.merit : 0);
       const textValues = programs.map(p => p.name || "Unnamed");
 
-      // Use a simple predefined color array
-      const colors = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'magenta'];
-
-      // Log data to ensure no undefined values
+      // Log data to ensure everything is defined correctly
       console.log("xValues:", xValues);
       console.log("yValues:", yValues);
       console.log("zValues:", zValues);
@@ -47,8 +47,8 @@
         text: textValues,
         mode: 'markers',
         marker: {
-          size: 15,  // Fixed bubble size for simplicity
-          color: colors,  // Use predefined color array
+          size: 15,
+          color: colors.slice(0, programs.length),  // Assign a color for each program
           showscale: false
         },
         hovertemplate: '%{text}',  // Show the program name on hover
@@ -60,7 +60,7 @@
         scene: {
           xaxis: { title: 'Mission', range: [0, 100] },
           yaxis: { title: 'Money', range: [0, 100] },
-          zaxis: { title: 'Merit', range: [0, 100] },
+          zaxis: { title: 'Merit', range: [0, 100] }
         },
         height: 800,
         width: 1200
