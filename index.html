@@ -13,7 +13,7 @@
 
   <script>
     function plotChart() {
-      // Predefined programs with simple data for now
+      // Predefined programs
       const programs = [
         { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
         { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
@@ -24,20 +24,27 @@
         { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
       ];
 
-      const data = programs.map((program, index) => ({
-        x: [program.mission],
-        y: [program.money],
-        z: [program.merit],
-        text: [program.name],
+      // Extract data into separate arrays for x, y, z coordinates and text labels
+      const xValues = programs.map(p => p.mission);
+      const yValues = programs.map(p => p.money);
+      const zValues = programs.map(p => p.merit);
+      const textValues = programs.map(p => p.name);
+
+      // Create a single scatter3d plot with all programs
+      const data = [{
+        x: xValues,
+        y: yValues,
+        z: zValues,
+        text: textValues,
         mode: 'markers',
         marker: {
           size: 20,  // Fixed bubble size for simplicity
-          color: Plotly.d3.schemeCategory10[index % 10], // Assign a color from a predefined color scheme
+          color: xValues.map((_, index) => Plotly.d3.schemeCategory10[index % 10]), // Assign a unique color
           showscale: false
         },
-        hovertemplate: `${program.name}`,
+        hovertemplate: '%{text}',  // Show the program name on hover
         type: 'scatter3d'
-      }));
+      }];
 
       const layout = {
         title: 'Mission, Money, Merit Tool',
