@@ -51,23 +51,23 @@
     input[type="number"] {
       width: 80px;
     }
-    .intro-section img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 20px auto;
-    }
   </style>
 </head>
 <body>
   <h1>Mission, Money, Merit Tool for Organisational Assessment</h1>
 
-  <!-- Introductory text and image -->
+  <!-- Updated Introductory text -->
   <div class="intro-section">
-    <p>Welcome to the Mission, Money, Merit Tool for Organisational Assessment. This tool is designed to help organisations evaluate their programs by assessing Mission Relevance, Value for Money, and Stakeholder Satisfaction.</p>
-    <p>Use the sliders below to adjust the values for each program, and enter the resource allocation (£) in the table to modify the bubble sizes in the 3D plot. The plot dynamically updates as you make changes.</p>
-    <!-- Optional image placeholder (You can replace this with an actual image if you'd like) -->
-    <img src="https://via.placeholder.com/600x200?text=Your+Image+Here" alt="Placeholder Image">
+    <p>Welcome to the Mission, Money, Merit Tool for Organisational Assessment. This tool is designed to help Beds SU evaluate their activity programs by making comparable assessments of each Program’s perceived Mission Relevance, Value for Money and Stakeholder Satisfaction.</p>
+    <p>Use the sliders below to adjust the values for each program along the three Mission, Money, Merit dimensions. Each program is shown in a plot at the bottom of the page.</p>
+    <p>Each slider shows an arbitrary scale from 0 to 100 where, e.g.:</p>
+    <ul>
+      <li>0 is equivalent to there being no relevance/value/satisfaction in the program.</li>
+      <li>50 could correspond to moderate relevance/value/satisfaction.</li>
+      <li>100 would indicate the utmost in relevance/value/satisfaction.</li>
+    </ul>
+    <p>The bubble sizes in the plot for each program have been set based upon the recent annual budget and include the distribution of support costs and are net of any income. They can be adjusted within the table presented. The plot dynamically updates as you make changes.</p>
+    <p>Please note this is a subjective tool to be used for discussion purposes only. References to ‘stakeholder satisfaction’ involve all charity stakeholders: e.g. students, the University, employees and volunteers, the public and regulators/the law.</p>
   </div>
 
   <!-- Sliders for each program -->
@@ -202,6 +202,4 @@
     createSliders();
     createBubbleSizeTable();
     plotChart();
-  </script>
-</body>
-</html>
+  </
