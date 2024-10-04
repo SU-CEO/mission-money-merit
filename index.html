@@ -1,45 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mission, Money, Merit Tool</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+    }
+    h1 {
+      text-align: center;
+    }
+    #chart {
+      width: 100%;
+      height: 800px;
+      margin: 0 auto;
+    }
+    .slider-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .slider-box {
+      margin: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Mission, Money, Merit Tool</h1>
+  <h1>Mission, Money, Merit Tool with Sliders</h1>
 
-  <div id="chart" style="width:100%;height:800px;"></div>
+  <!-- Sliders for Mission, Money, and Merit for first program -->
+  <div class="slider-container">
+    <div class="slider-box">
+      <label>Mission: <span id="mission-value">50</span></label><br>
+      <input type="range" id="mission-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
+    </div>
+    <div class="slider-box">
+      <label>Money: <span id="money-value">50</span></label><br>
+      <input type="range" id="money-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
+    </div>
+    <div class="slider-box">
+      <label>Merit: <span id="merit-value">50</span></label><br>
+      <input type="range" id="merit-slider" min="0" max="100" value="50" step="5" oninput="updateChart()">
+    </div>
+  </div>
+
+  <div id="chart"></div>
 
   <script>
-    function plotChart() {
-      // Predefined programs
-      const programs = [
-        { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
-        { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
-        { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60 },
-        { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80 },
-        { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50 },
-        { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65 },
-        { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
-      ];
+    let programs = [
+      { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
+      { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
+      { name: "Student Voice, 3.2 FTE", mission: 45, money: 65, merit: 60 },
+      { name: "Communications, 3.1 FTE", mission: 70, money: 40, merit: 80 },
+      { name: "Social Opportunities, 2.5 FTE", mission: 55, money: 75, merit: 50 },
+      { name: "Venues, 1.9 FTE", mission: 80, money: 60, merit: 65 },
+      { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
+    ];
 
-      // Ensure that there are colors for each program, cycling if necessary
+    // Update chart when sliders are moved
+    function updateChart() {
+      const mission = document.getElementById("mission-slider").value;
+      const money = document.getElementById("money-slider").value;
+      const merit = document.getElementById("merit-slider").value;
+
+      // Update displayed values
+      document.getElementById("mission-value").innerText = mission;
+      document.getElementById("money-value").innerText = money;
+      document.getElementById("merit-value").innerText = merit;
+
+      // Update the first program's values
+      programs[0].mission = parseFloat(mission);
+      programs[0].money = parseFloat(money);
+      programs[0].merit = parseFloat(merit);
+
+      plotChart();
+    }
+
+    function plotChart() {
+      // Extract x, y, z values and text labels from programs
+      const xValues = programs.map(p => p.mission);
+      const yValues = programs.map(p => p.money);
+      const zValues = programs.map(p => p.merit);
+      const textValues = programs.map(p => p.name);
+
+      // Colors for programs
       const colors = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'magenta'];
 
-      // Map data into x, y, z values
-      const xValues = programs.map(p => p.mission !== undefined ? p.mission : 0);
-      const yValues = programs.map(p => p.money !== undefined ? p.money : 0);
-      const zValues = programs.map(p => p.merit !== undefined ? p.merit : 0);
-      const textValues = programs.map(p => p.name || "Unnamed");
-
-      // Log data to ensure everything is defined correctly
-      console.log("xValues:", xValues);
-      console.log("yValues:", yValues);
-      console.log("zValues:", zValues);
-      console.log("textValues:", textValues);
-
-      // Create a single scatter3d plot with all programs
       const data = [{
         x: xValues,
         y: yValues,
@@ -48,10 +95,10 @@
         mode: 'markers',
         marker: {
           size: 15,
-          color: colors.slice(0, programs.length),  // Assign a color for each program
+          color: colors,
           showscale: false
         },
-        hovertemplate: '%{text}',  // Show the program name on hover
+        hovertemplate: '%{text}',
         type: 'scatter3d'
       }];
 
@@ -60,7 +107,7 @@
         scene: {
           xaxis: { title: 'Mission', range: [0, 100] },
           yaxis: { title: 'Money', range: [0, 100] },
-          zaxis: { title: 'Merit', range: [0, 100] }
+          zaxis: { title: 'Merit', range: [0, 100] },
         },
         height: 800,
         width: 1200
@@ -69,7 +116,7 @@
       Plotly.newPlot('chart', data, layout);
     }
 
-    // Initialize the chart when the page loads
+    // Initialize the chart
     plotChart();
   </script>
 </body>
