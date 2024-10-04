@@ -101,6 +101,7 @@
     ];
 
     const MAX_BUBBLE_SIZE = 200000;
+    const SIZE_MULTIPLIER = 2.5;  // Increase the bubble size proportionally by this factor
 
     function createSliders() {
       const sliderContainer = document.getElementById("sliders");
@@ -168,7 +169,7 @@
       const zValues = programs.map(p => p.merit);
       const textValues = programs.map(p => p.name);
       const colors = programs.map(p => p.color);
-      const sizes = programs.map(p => (p.size / MAX_BUBBLE_SIZE) * 50);  // Adjust bubble size proportionally
+      const sizes = programs.map(p => ((p.size / MAX_BUBBLE_SIZE) * 50) * SIZE_MULTIPLIER);  // Adjust bubble size proportionally
 
       const data = [{
         x: xValues,
@@ -181,7 +182,7 @@
           color: colors,
           showscale: false
         },
-        hovertemplate: '%{text} (£%{marker.size})',
+        hovertemplate: '%{text}',  // Fix hover template to only show program name
         type: 'scatter3d'
       }];
 
