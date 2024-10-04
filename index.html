@@ -13,7 +13,7 @@
 
   <script>
     function plotChart() {
-      // Predefined programs (check if they're defined correctly)
+      // Predefined programs (ensured the array is correctly defined)
       const programs = [
         { name: "Campaigns, Representation, Influence, 5 FTE", mission: 50, money: 50, merit: 50 },
         { name: "Advice and Information, 4.7 FTE", mission: 60, money: 70, merit: 55 },
@@ -24,23 +24,20 @@
         { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70 }
       ];
 
-      // Check if programs are defined
-      if (!programs || programs.length === 0) {
-        console.error("Programs data is not defined correctly.");
-        return;
-      }
+      // Create arrays for x, y, z values and names (checking if they exist first)
+      const xValues = programs.map(p => p.mission !== undefined ? p.mission : 0);
+      const yValues = programs.map(p => p.money !== undefined ? p.money : 0);
+      const zValues = programs.map(p => p.merit !== undefined ? p.merit : 0);
+      const textValues = programs.map(p => p.name || "Unnamed");
 
-      // Extract data into separate arrays for x, y, z coordinates and text labels
-      const xValues = programs.map(p => p.mission || 0);  // Default to 0 if undefined
-      const yValues = programs.map(p => p.money || 0);    // Default to 0 if undefined
-      const zValues = programs.map(p => p.merit || 0);    // Default to 0 if undefined
-      const textValues = programs.map(p => p.name || "No Name");
+      // Use a simple predefined color array
+      const colors = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'magenta'];
 
-      // Log data to verify correctness
-      console.log("X Values:", xValues);
-      console.log("Y Values:", yValues);
-      console.log("Z Values:", zValues);
-      console.log("Text Values:", textValues);
+      // Log data to ensure no undefined values
+      console.log("xValues:", xValues);
+      console.log("yValues:", yValues);
+      console.log("zValues:", zValues);
+      console.log("textValues:", textValues);
 
       // Create a single scatter3d plot with all programs
       const data = [{
@@ -51,7 +48,7 @@
         mode: 'markers',
         marker: {
           size: 15,  // Fixed bubble size for simplicity
-          color: xValues.map((_, index) => Plotly.d3.schemeCategory10[index % 10]), // Assign a unique color
+          color: colors,  // Use predefined color array
           showscale: false
         },
         hovertemplate: '%{text}',  // Show the program name on hover
