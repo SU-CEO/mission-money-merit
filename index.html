@@ -8,7 +8,7 @@
     body {
       font-family: 'Arial', sans-serif;
     }
-    h1 {
+    h1, h2, p {
       text-align: center;
     }
     #chart {
@@ -51,16 +51,30 @@
     input[type="number"] {
       width: 80px;
     }
+    .intro-section img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+    }
   </style>
 </head>
 <body>
-  <h1>Mission, Money, Merit Tool with Adjustable Bubble Sizes</h1>
+  <h1>Mission, Money, Merit Tool for Organisational Assessment</h1>
+
+  <!-- Introductory text and image -->
+  <div class="intro-section">
+    <p>Welcome to the Mission, Money, Merit Tool for Organisational Assessment. This tool is designed to help organisations evaluate their programs by assessing Mission Relevance, Value for Money, and Stakeholder Satisfaction.</p>
+    <p>Use the sliders below to adjust the values for each program, and enter the resource allocation (£) in the table to modify the bubble sizes in the 3D plot. The plot dynamically updates as you make changes.</p>
+    <!-- Optional image placeholder (You can replace this with an actual image if you'd like) -->
+    <img src="https://via.placeholder.com/600x200?text=Your+Image+Here" alt="Placeholder Image">
+  </div>
 
   <!-- Sliders for each program -->
   <div class="slider-container" id="sliders"></div>
 
   <!-- Table for adjusting bubble sizes -->
-  <h2 style="text-align:center">Adjust Bubble Sizes (£)</h2>
+  <h2>Adjust Program Resource Allocation £</h2>
   <table>
     <thead>
       <tr>
@@ -86,7 +100,6 @@
       { name: "NUS, 0 FTE", mission: 30, money: 50, merit: 70, size: 27000, color: 'magenta' }
     ];
 
-    // Maximum bubble size in £
     const MAX_BUBBLE_SIZE = 200000;
 
     function createSliders() {
@@ -130,8 +143,6 @@
     function updateBubbleSize(index) {
       const newSize = document.getElementById(`bubble-size-${index}`).value;
       programs[index].size = parseFloat(newSize);
-
-      // Re-plot the chart with updated bubble sizes
       plotChart();
     }
 
@@ -157,7 +168,7 @@
       const zValues = programs.map(p => p.merit);
       const textValues = programs.map(p => p.name);
       const colors = programs.map(p => p.color);
-      const sizes = programs.map(p => (p.size / MAX_BUBBLE_SIZE) * 50);  // Scale bubble size relative to max size
+      const sizes = programs.map(p => (p.size / MAX_BUBBLE_SIZE) * 50);
 
       const data = [{
         x: xValues,
@@ -177,9 +188,9 @@
       const layout = {
         title: 'Mission, Money, Merit Tool',
         scene: {
-          xaxis: { title: 'Mission', range: [0, 100] },
-          yaxis: { title: 'Money', range: [0, 100] },
-          zaxis: { title: 'Merit', range: [0, 100] },
+          xaxis: { title: 'Mission Relevance (Mission)', range: [0, 100] },
+          yaxis: { title: 'Value for Money (Money)', range: [0, 100] },
+          zaxis: { title: 'Stakeholder Satisfaction (Merit)', range: [0, 100] },
         },
         height: 800,
         width: 1200
