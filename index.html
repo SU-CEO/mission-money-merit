@@ -30,6 +30,12 @@
       const zValues = programs.map(p => p.merit);
       const textValues = programs.map(p => p.name);
 
+      // Log data to verify correctness
+      console.log("X Values:", xValues);
+      console.log("Y Values:", yValues);
+      console.log("Z Values:", zValues);
+      console.log("Text Values:", textValues);
+
       // Create a single scatter3d plot with all programs
       const data = [{
         x: xValues,
@@ -38,7 +44,7 @@
         text: textValues,
         mode: 'markers',
         marker: {
-          size: 20,  // Fixed bubble size for simplicity
+          size: 15,  // Fixed bubble size for simplicity
           color: xValues.map((_, index) => Plotly.d3.schemeCategory10[index % 10]), // Assign a unique color
           showscale: false
         },
